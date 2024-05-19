@@ -15,5 +15,13 @@ typecheck:
 
 lint: format check typecheck
 
+build:
+	rm -rf dist/
+	rm -rf src/asyncgauth.egg-info
+	python -m build
 
-.PHONY: install lock format check lint
+publish:
+	twine check --strict dist/* && twine upload dist/*
+
+
+.PHONY: install lock format check lint build publish
