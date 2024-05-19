@@ -15,7 +15,6 @@ from asyncgauth.exceptions import MissingToken
 # https://cloud.google.com/docs/authentication/rest#metadata-server
 class MetadataServerAuth:
     def __init__(self):
-        self._client = httpx.AsyncClient()
         self._token_expiry: Optional[datetime] = None
         self.access_token: Optional[str] = None
         self._project_id: Optional[str] = None
@@ -30,7 +29,7 @@ class MetadataServerAuth:
 
     async def _refresh_token(self) -> None:
         headers = {METADATA_SERVER_HEADER_KEY: METADATA_SERVER_HEADER_VAL}
-        async with self._client as client:
+        async with httpx.AsyncClient() as client:
             raw_resp = await client.post(
                 METADATA_SERVER_TOKEN_ENDPOINT, headers=headers
             )
@@ -57,7 +56,7 @@ class MetadataServerAuth:
         if self._project_id:
             return self._project_id
         headers = {METADATA_SERVER_HEADER_KEY: METADATA_SERVER_HEADER_VAL}
-        async with self._client as client:
+        async with httpx.AsyncClient() as client:
             raw_resp = await client.post(
                 METADATA_SERVER_PROJECT_ID_ENDPOINT, headers=headers
             )

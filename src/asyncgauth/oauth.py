@@ -11,7 +11,6 @@ class OfflineOauthWithRefresh:
     def __init__(
         self, client_id: str, client_secret: str, refresh_token: str, project_id: str
     ):
-        self._client = httpx.AsyncClient()
         self._client_id = client_id
         self._client_secret = client_secret
         self._refresh_token = refresh_token
@@ -36,7 +35,7 @@ class OfflineOauthWithRefresh:
             "client_secret": self._client_secret,
             "refresh_token": self._refresh_token,
         }
-        async with self._client as client:
+        async with httpx.AsyncClient() as client:
             raw_resp = await client.post(OAUTH_TOKEN_ENDPOINT, params=params)
             resp = OauthOfflineRefreshResponse.model_validate(raw_resp.json())
             self.access_token = resp.access_token
